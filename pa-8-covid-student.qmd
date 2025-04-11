@@ -156,3 +156,28 @@ cases |>
 ### Create your own graph
 
 Using the COVID-19 data, create your graph to answer you own research question. You will submit that graph as png file in your Canvas quiz. Include your research question as the subtitle of the graph.  
+
+
+
+
+```{r}
+cases |> 
+  filter(state == "California") |> # filter state is CA
+  mutate(date = date(date), # change these 3 variables into date time format
+         month = month(date, label = FALSE, abbr = TRUE),
+         year = year(date)) |> 
+    unite("month_year", year:month, sep = "-") |> # combine month and year into one variable
+  group_by(month_year)|> # group by year
+  mutate(death_ratio = deaths/cases)|> # get the total cases for each month
+  ggplot(aes(x = date, y = death_ratio)) + # plot the monthly cases totals, and order them to be descending
+  geom_point()+
+  labs(title = "Covid 19 Deaths to Cases Ratio 2020-2023",
+       subtitle = "Research question: What year between 2020 and 2023 had the highest cases to death ratio in California?",
+       x = "Date",
+       y = "Deaths to Case Ratio")+
+  theme_light()
+ggsave("death_to_cases_plot.png")
+```
+
+
+
